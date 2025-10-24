@@ -1,6 +1,6 @@
 ## HTTP Bank Account Kata
 
-inspired by codurance.com/katas/bank and github.com/bombo82/cin-cin-que
+HTTP backend kata inspired by [Codurance Bank Account Kata](https://codurance.com/katas/bank) and [Gianni's http kata proposal](https://github.com/bombo82/cin-cin-que).
 
 ### Development notes
 
