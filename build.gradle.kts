@@ -1,3 +1,8 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+
 plugins {
     kotlin("jvm") version "1.9.0"
 }
@@ -20,6 +25,8 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging.events(PASSED, FAILED, SKIPPED)
+    outputs.upToDateWhen { false }
 }
 
 kotlin {
