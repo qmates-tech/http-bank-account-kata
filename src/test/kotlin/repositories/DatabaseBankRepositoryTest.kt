@@ -176,4 +176,26 @@ class DatabaseBankRepositoryTest {
         assertThat(repository.balanceFor(firstAccountUUID)).isEqualTo(BigDecimal(100))
         assertThat(repository.balanceFor(secondAccountUUID)).isEqualTo(BigDecimal(200))
     }
+
+    @Test
+    fun `create new account and get it by id`() {
+        val newAccount = Account.new()
+        val accountId = newAccount.id
+        repository.store(newAccount)
+
+        val fetchedAccount = repository.getAccountById(accountId)
+
+        assertThat(fetchedAccount.id).isEqualTo(accountId)
+        assertThat(fetchedAccount.getOperations()).isEmpty()
+    }
+
+    @Test
+    fun `get account by non existing account id throws an exception`() {
+        val nonExistingAccountUUID = UUID.fromString("042cd801-b941-4ec1-8cd6-e1887023fd72")
+        val thrownException = assertThrows<NonExistingAccountException> {
+            repository.getAccountById(nonExistingAccountUUID)
+        }
+
+        assertThat(thrownException).hasMessage("Account with 042cd801-b941-4ec1-8cd6-e1887023fd72 does not exist")
+    }
 }

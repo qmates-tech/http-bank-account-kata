@@ -72,6 +72,35 @@ class DatabaseBankRepository : BankRepository {
             .executeUpdate("UPDATE bank_account SET balance = (balance - ?) WHERE id = ?", amount, accountUUID)
     }
 
+    override fun getAccountById(accountUUID: UUID): Account {
+        val connection = openConnection()
+        val query = connection.prepareStatement("SELECT * FROM bank_account WHERE id = ?")
+        query.setObject(1, accountUUID)
+
+        val resultSet = query.executeQuery()
+        if (!resultSet.next())
+            throw NonExistingAccountException(accountUUID)
+
+        // check if more than one result
+
+        return Account(
+            UUID.fromString(resultSet.getString("id")),
+            mutableListOf()
+        )
+    }
+
+    override fun store(account: Account) {
+        val connection = openConnection()
+        val query = connection
+            .prepareStatement("INSERT INTO bank_account (id, balance) VALUES (?, ?)")
+            .apply {
+                setObject(1, account.id)
+                setBigDecimal(2, BigDecimal.ZERO)
+            }
+
+        query.executeUpdate()
+    }
+
     private fun openConnection(): Connection = DriverManager.getConnection(jdbcConnectionUrl)
 
     private fun Connection.executeUpdate(sql: String, vararg params: Any): Int {
